@@ -8,6 +8,7 @@ First, you have to install the pip module PyQt5
 
 Now run the main script:  
 ```python main.py -p 9092```
+Note: the commands may vary depending on your system!  
 
 That's it!  
-Note: the commands may vary depending on your system!
+Now just move any wall furniture in your room and the values will load in the graphical user interface.
