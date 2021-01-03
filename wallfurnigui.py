@@ -125,6 +125,9 @@ class Ui_WallFurniUI(QWidget):
         self.btn_add_d.clicked.connect(self.add_d)
         self.btn_add_y.clicked.connect(self.add_y)
 
+        self.radio_left.toggled.connect(self.check_left)
+        self.radio_right.toggled.connect(self.check_right)
+
         self.retranslateUi(WallFurniUI)
         QtCore.QMetaObject.connectSlotsByName(WallFurniUI)
 
@@ -199,4 +202,13 @@ class Ui_WallFurniUI(QWidget):
     def sub_y(self):
         self.__wall_furni.set_y(int(self.input_y.toPlainText()) - 1)
 
+    def check_left(self):
+        radioButton = self.sender()
+        if radioButton.isChecked():
+            self.__wall_furni.set_orientation("l")
+
+    def check_right(self):
+        radioButton = self.sender()
+        if radioButton.isChecked():
+            self.__wall_furni.set_orientation("r")
 
