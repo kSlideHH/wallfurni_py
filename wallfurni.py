@@ -3,11 +3,10 @@ import time
 import sys
 
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication
 
 from g_python.hdirection import Direction
 from g_python.hmessage import HMessage
-from g_python.hpacket import HPacket
 
 HEADER_ON_PLACE_WALL_ITEM = 108
 
@@ -40,26 +39,28 @@ class WallFurni:
         self.__app = QApplication(sys.argv)
         self.__window = QtWidgets.QMainWindow()
         self.__window.setWindowTitle("WallFurni by kSlide")
-        self.__ui = Ui_WallFurniUI()
+        self.__ui = Ui_WallFurniUI(self)
         self.__ui.setupUi(self.__window)
         self.__window.show()
         sys.exit(self.__app.exec_())
 
     def __on_place_wall_item(self, message: HMessage):
-        (self.__furni_id, self.z, self.x, self.depth, self.y, self.orientation) = message.packet.read("liiiis")
+        (self.furni_id, self.z, self.x, self.depth, self.y, self.orientation) = message.packet.read("liiiis")
         self.log(
             f'<PlaceWallitem> [{self.furni_id}] - Z: {self.z} - X: {self.x} - D: {self.depth} - Y: {self.y} - '
             f'orientation: {self.orientation}')
+
+        self.__ui.emitRefresh()
         message.is_blocked = self.__block
 
     def __place_wall_item(self, furni, z, x, depth, y, orientation):
         self.__extension \
-            .send_to_server(
-            HPacket('{l}{h:' + str(HEADER_ON_PLACE_WALL_ITEM) + '}{l:' + str(furni) + '}{i:' + str(x) + '}{i:' + str(
-                z) + '}{i:' + str(depth) + '}{i:' + str(y) + '}{s:"' + str(orientation) + '"}'))
+            .send_to_server('{l}{h:' + str(HEADER_ON_PLACE_WALL_ITEM) + '}{l:' + str(furni) + '}{i:' + str(x) + '}{i:' + str(
+                z) + '}{i:' + str(depth) + '}{i:' + str(y) + '}{s:"' + str(orientation) + '"}')
 
     def __refresh_wall_item_position(self):
         self.__place_wall_item(self.furni_id, self.z, self.x, self.depth, self.y, self.orientation)
+        self.__ui.emitRefresh()
 
     def set_furni(self, furni: str):
         self.furni_id = furni
