@@ -45,21 +45,21 @@ class WallFurni:
         sys.exit(self.__app.exec_())
 
     def __on_place_wall_item(self, message: HMessage):
-        (self.furni_id, self.z, self.x, self.depth, self.y, self.orientation) = message.packet.read("liiiis")
+        (self.furni_id, self.x, self.y, self.depth, self.z, self.orientation) = message.packet.read("liiiis")
         self.log(
-            f'<PlaceWallitem> [{self.furni_id}] - Z: {self.z} - X: {self.x} - D: {self.depth} - Y: {self.y} - '
+            f'<PlaceWallitem> [{self.furni_id}] - X: {self.x} - Y: {self.y} - D: {self.depth} - Z: {self.z} - '
             f'orientation: {self.orientation}')
 
         self.__ui.emitRefresh()
         message.is_blocked = self.__block
 
-    def __place_wall_item(self, furni, z, x, depth, y, orientation):
+    def __place_wall_item(self, furni, x, y, depth, z, orientation):
         self.__extension \
             .send_to_server('{l}{h:' + str(HEADER_ON_PLACE_WALL_ITEM) + '}{l:' + str(furni) + '}{i:' + str(x) + '}{i:' + str(
                 z) + '}{i:' + str(depth) + '}{i:' + str(y) + '}{s:"' + str(orientation) + '"}')
 
     def __refresh_wall_item_position(self):
-        self.__place_wall_item(self.furni_id, self.z, self.x, self.depth, self.y, self.orientation)
+        self.__place_wall_item(self.furni_id, self.x, self.y, self.depth, self.z, self.orientation)
         self.__ui.emitRefresh()
 
     def set_furni(self, furni: str):
