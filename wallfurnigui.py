@@ -9,9 +9,21 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt, QObject, pyqtSignal
+from PyQt5.QtWidgets import QWidget
 
 
-class Ui_WallFurniUI(object):
+class CustomEvents(QObject):
+    refreshEvent = pyqtSignal()
+
+
+class Ui_WallFurniUI(QWidget):
+    def __init__(self, WallFurni):
+        super().__init__()
+        self.__signal = CustomEvents()
+        self.__signal.refreshEvent.connect(self.refresh)
+        self.__wall_furni = WallFurni
+
     def setupUi(self, WallFurniUI):
         WallFurniUI.setObjectName("WallFurniUI")
         WallFurniUI.resize(292, 303)
@@ -98,6 +110,21 @@ class Ui_WallFurniUI(object):
         self.statusbar.setObjectName("statusbar")
         WallFurniUI.setStatusBar(self.statusbar)
 
+        self.btn_apply_z.clicked.connect(self.apply_z)
+        self.btn_apply_x.clicked.connect(self.apply_x)
+        self.btn_apply_d.clicked.connect(self.apply_d)
+        self.btn_apply_y.clicked.connect(self.apply_y)
+
+        self.btn_sub_z.clicked.connect(self.sub_z)
+        self.btn_sub_x.clicked.connect(self.sub_x)
+        self.btn_sub_d.clicked.connect(self.sub_d)
+        self.btn_sub_y.clicked.connect(self.sub_y)
+
+        self.btn_add_z.clicked.connect(self.add_z)
+        self.btn_add_x.clicked.connect(self.add_x)
+        self.btn_add_d.clicked.connect(self.add_d)
+        self.btn_add_y.clicked.connect(self.add_y)
+
         self.retranslateUi(WallFurniUI)
         QtCore.QMetaObject.connectSlotsByName(WallFurniUI)
 
@@ -124,8 +151,52 @@ class Ui_WallFurniUI(object):
         self.radio_right.setText(_translate("WallFurniUI", "R"))
         self.label_orientation.setText(_translate("WallFurniUI", "Orientation"))
         self.label.setText(_translate("WallFurniUI", "Current furni id"))
-        self.textBrowser.setHtml(_translate("WallFurniUI", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'.AppleSystemUIFont\'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-style:italic;\">None</span></p></body></html>"))
+        self.textBrowser.setText(_translate("WallFurniUI", "None"))
+
+    def refresh(self):
+        self.input_z.setText(str(self.__wall_furni.z))
+        self.input_x.setText(str(self.__wall_furni.x))
+        self.input_d.setText(str(self.__wall_furni.depth))
+        self.input_y.setText(str(self.__wall_furni.y))
+        self.textBrowser.setText(str(self.__wall_furni.furni_id))
+
+    def emitRefresh(self):
+        self.__signal.refreshEvent.emit()
+
+    def apply_z(self):
+        self.__wall_furni.set_z(int(self.input_z.toPlainText()))
+
+    def apply_x(self):
+        self.__wall_furni.set_x(int(self.input_x.toPlainText()))
+
+    def apply_d(self):
+        self.__wall_furni.set_depth(int(self.input_d.toPlainText()))
+
+    def apply_y(self):
+        self.__wall_furni.set_y(int(self.input_z.toPlainText()))
+
+    def add_z(self):
+        self.__wall_furni.set_z(int(self.input_z.toPlainText()) + 1)
+
+    def add_x(self):
+        self.__wall_furni.set_x(int(self.input_x.toPlainText()) + 1)
+
+    def add_d(self):
+        self.__wall_furni.set_depth(int(self.input_d.toPlainText()) + 1)
+
+    def add_y(self):
+        self.__wall_furni.set_y(int(self.input_y.toPlainText()) + 1)
+
+    def sub_z(self):
+        self.__wall_furni.set_z(int(self.input_z.toPlainText()) - 1)
+
+    def sub_x(self):
+        self.__wall_furni.set_x(int(self.input_x.toPlainText()) - 1)
+
+    def sub_d(self):
+        self.__wall_furni.set_depth(int(self.input_d.toPlainText()) - 1)
+
+    def sub_y(self):
+        self.__wall_furni.set_y(int(self.input_y.toPlainText()) - 1)
+
+
