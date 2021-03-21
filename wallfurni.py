@@ -46,6 +46,14 @@ class WallFurni:
 
     def __on_place_wall_item(self, message: HMessage):
         (self.furni_id, self.z, self.x, self.depth, self.y, self.orientation) = message.packet.read("liiiis")
+        """
+            if on flash :
+
+            (self.furni_id, string) = message.packet.read("is")
+            string = string.replace(":w=", "").replace("l=", "").split(" ")
+            string = ",".join(string).split(",")
+            self.z, self.x, self.depth, self.y, self.orientation = string
+        """
         self.log(
             f'<PlaceWallitem> [{self.furni_id}] - Z: {self.z} - X: {self.x} - D: {self.depth} - Y: {self.y} - '
             f'orientation: {self.orientation}')
@@ -57,6 +65,12 @@ class WallFurni:
         self.__extension \
             .send_to_server('{l}{h:' + str(HEADER_ON_PLACE_WALL_ITEM) + '}{l:' + str(furni) + '}{i:' + str(x) + '}{i:' + str(
                 z) + '}{i:' + str(depth) + '}{i:' + str(y) + '}{s:"' + str(orientation) + '"}')
+
+        """
+            if on flash :
+            
+            self.__extension.send_to_server('{l}{h:'+str(HEADER_ON_PLACE_WALL_ITEM)+'}{i:'+str(furni)+'}{s:":w='+str(x)+','+str(z)+' l='+str(depth)+','+str(y)+' '+str(orientation)+'"}')
+        """
 
     def __refresh_wall_item_position(self):
         self.__place_wall_item(self.furni_id, self.z, self.x, self.depth, self.y, self.orientation)
